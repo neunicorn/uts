@@ -57,9 +57,19 @@ cur.execute("""CREATE TABLE IF NOT EXISTS orders(
 
 conn.commit()
 
-cur.execute("INSERT INTO income(income_modal) VALUES(400000000)")
+pemasukan = cur.execute("SELECT * FROM income").fetchall()
+if pemasukan == []:
+    cur.execute("INSERT INTO income(income_modal) VALUES(400000000)")
+    conn.commit()
+else:
+    pass
 
-cur.executemany("INSERT INTO products(jenis_motor, quantity, price) VALUES(?,?,?)", products_motor)
+product = cur.execute("SELECT * FROM products").fetchall()
+if product == []:
+    cur.executemany("INSERT INTO products(jenis_motor, quantity, price) VALUES(?,?,?)", products_motor)
+    conn.commit()
+else:
+    pass
 
 def insert_customer(data_customer):
 
@@ -100,6 +110,7 @@ def get_income():
     return cur.fetchall()
 
 def main():
+
     print("\t========== PT. XYZ Otomotif ==========\n")
     print("\t1. Beli")
     print("\t2. Riwayat penjualan")
@@ -128,8 +139,7 @@ def check_akun():
     
     cek_akun = get_customer()
     input_NIK = input("Masukkan NIK: ")
-    if cur.execute(f"SELECT NIK from customers where NIK = {input_NIK}").fetchone :
-
+    if cur.execute(f"SELECT NIK from customers where NIK = {input_NIK}").fetchone() :
         return input_NIK
     else:
         print("Data tidak ditemukan!\nSilakan memasukkan data diri terlebih dahulu\n\n")                
@@ -307,6 +317,7 @@ def income():
             pass
     os.system("cls")
     main()
+
 
 main()
 conn.close()
