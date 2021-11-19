@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import datetime
+import re
 from tabulate import tabulate
 
 def mainProgram():
@@ -23,8 +24,6 @@ def mainProgram():
         case5()
     elif pilih == 0:
         quit()
-
-
 
 def case1():
     """"Membuat connection ke sqlite"""
@@ -243,6 +242,7 @@ def case1():
 
     def payment():
         NIK = login()
+        print("NIK: "  + NIK)
         total = 0
         print("\t========== PT. XYZ Otomotif ==========\n")
         product = get_products()
@@ -317,10 +317,17 @@ def case1():
 
         print("\n\n\n")
         while(True):
-            back = input("input 1 to back to menu: ")
+            back = input("input 1 to back to menu or 2 to pop data:  ")
             if back == "1":
                 break
-                
+
+            elif back == "2":
+                cur.execute("delete from orders where id = (SELECT MAX(id) FROM orders)")
+                print("Data terakhir berhasil di hapus(pop)")
+                enter = input("press enter to continue...")
+                os.system("cls")
+                history()
+
             else:
                 pass
         os.system("cls")
@@ -364,14 +371,14 @@ def case3():
         print("2. history")
         print("0. quit")
         inputMenu = input("input: ")
-        if(inputMenu is "1"):
+        if(inputMenu == "1"):
             os.system("cls")
             input_data()
-        elif inputMenu is "2":
+        elif inputMenu == "2":
             os.system("cls")
             print("\t====== HISTORY =======\n")
             history()
-        elif inputMenu is "0":
+        elif inputMenu == "0":
             os.system("cls")
             mainProgram()
         else:
@@ -392,6 +399,20 @@ def case3():
         data_history = get_data()
         # print("id\tMax Value\t Date")
         print(tabulate(data_history, headers=["id", "Max Value", "Date"]))
+        print()
+        print()
+        print("1. Back to menu\n2. Pop data:")
+        backMenu = input("input: ")
+        if backMenu == "1":
+            os.system("cls")
+            main()
+        elif backMenu == "2":
+            cursor.execute("DELETE FROM numberone WHERE id = (SELECT MAX(id) FROM numberone)")
+            conn.commit()
+            print("Data berhasil di pop")
+            back = input("press enter to back to history..")
+            os.system("cls")
+            history()
         # for i in data_history:
         #     print(str(i[0]) + "\t"  + str(i[1]) + "\t   " + str(i[2]))
         
@@ -484,17 +505,35 @@ def case5():
         insert_data = (variable, history_input)
         insert_values(insert_data)
 
+        print("enter to back to main menu...")
+        back_to_main_menu = input()
+        main5()
+
     def history5():
         with conn:
             cur.execute("SELECT * FROM history")
             history55 = cur.fetchall()
 
         print(tabulate(history55, headers=["No", "Kata", "Max Value",  "Date"]))
+        print("1. Back to menu\n2. Pop data")
+        back_main_menu = input("input: ")
+        if back_main_menu == "1":
+            os.system("cls")
+            main5()
+        elif back_main_menu == "2":
+            cur.execute("DELETE FROM history WHERE id = (SELECT MAX(id) FROM history)")
+            conn.commit()
+
+            print("data berhasil di pop")
+            backk = input("press enter to back to history...")
+            os.system("cls")
+            history5()
 
     def  main5():
         print("===== Menghitung consonant values =====")
         print("1. input data")
         print("2. history")
+        print("0. Quit")
         choise = input("pilih: ")
 
         if choise == "1":
@@ -502,11 +541,13 @@ def case5():
             input_values()
         elif choise == "2":
             history5()
+        elif choise == "0":
+            os.system("cls")
+            mainProgram()
 
 
     main5()
 
     conn.close()
-
 
 mainProgram()
