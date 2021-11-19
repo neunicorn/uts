@@ -4,7 +4,7 @@ import datetime
 from tabulate import tabulate
 
 """"Membuat connection ke sqlite"""
-conn = sqlite3.connect(":memory:")
+conn = sqlite3.connect("databases.db")
 cur = conn.cursor()
 
 products_motor = [("Revo F1 110", 30, 12500000),
@@ -27,12 +27,12 @@ cur.execute("""create table if not exists products(
 
 cur.execute("""create table IF NOT EXISTS customers(
     NIK TEXT PRIMARY KEY,
-    nama VARCHAR(40) NOT NULL,
+    nama VARCHAR(50) NOT NULL,
     tempat_lahir VARCHAR(20) NOT NULL,
     tanggal_lahir timestamp NOT NULL,
     jenis_kelamin TEXT CHECK( jenis_kelamin IN ('L','P')) NOT NULL,
     alamat VARCHAR(50) NOT NULL,
-    agama TEXT CHECK(agama IN ("Islam", "Protestan", "Katolik", "Hindu", "Budha", "Konghucu")) NOT NULL,
+    agama TEXT NOT NULL,
     status_nikah TEXT CHECK (status_nikah IN ("sudah", "belum")) NOT NULL,
     pekerjaan VARCHAR(30) NOT NULL,
     kewarganegaraan TEXT CHECK (kewarganegaraan IN ("WNI", "WNA")) NOT NULL
@@ -69,7 +69,7 @@ def insert_customer(data_customer):
 
 def get_customer():
     with conn:
-        cur.execute("SELECT NIK FROM customers")
+        cur.execute("SELECT * FROM customers")
     return cur.fetchall()
 
 def get_products():
@@ -117,6 +117,7 @@ def main():
         os.system("cls")
         income()
     elif pilih == "0":
+        conn.close()
         quit()
     else:
         print("inputan salah!")
@@ -126,16 +127,13 @@ def main():
 def check_akun():
     
     cek_akun = get_customer()
-    input_NIK = ""
-    try:
-        input_NIK = input("Masukkan NIK: ")
-        if input_NIK in cek_akun:
-            return input_NIK
-        else:
-            print("Data tidak ditemukan!\nSilakan memasukkan data diri terlebih dahulu\n\n")                
-    except:
-        print(sqlite3.Error)
-    
+    input_NIK = input("Masukkan NIK: ")
+    if cur.execute(f"SELECT NIK from customers where NIK = {input_NIK}").fetchone :
+
+        return input_NIK
+    else:
+        print("Data tidak ditemukan!\nSilakan memasukkan data diri terlebih dahulu\n\n")                
+
 
 def login():
     print()
@@ -148,6 +146,8 @@ def login():
         return nik_baru
     elif customer_baru == "n":
         check = check_akun()
+        print(check)
+        print()
         if check == None:
             nik_baru = buat_akun()
             return nik_baru
