@@ -11,18 +11,18 @@ def mainProgram():
     print("3. Case5")
     print("0. Quit")
 
-    pilih = input("pilih case: ")
+    pilih_main_program = input("pilih case: ")
 
-    if pilih == "1":
+    if pilih_main_program == "1":
         os.system("cls")
         case1()
-    elif pilih == "2":
+    elif pilih_main_program == "2":
         os.system("cls")
         case3()
-    elif pilih == "3":
+    elif pilih_main_program == "3":
         os.system("cls")
         case5()
-    elif pilih == 0:
+    elif pilih_main_program == 0:
         quit()
 
 def case1():
