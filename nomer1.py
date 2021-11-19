@@ -69,7 +69,7 @@ def insert_customer(data_customer):
 
 def get_customer():
     with conn:
-        cur.execute("SELECT * FROM customers")
+        cur.execute("SELECT NIK FROM customers")
     return cur.fetchall()
 
 def get_products():
@@ -133,7 +133,9 @@ def login():
         nik_baru = buat_akun()
         return nik_baru
     elif customer_baru == "n":
+
         cek_akun = get_customer()
+        input_NIK = ""
         while(True):
             try:
                 input_NIK = input("Masukkan NIK: ")
@@ -142,6 +144,7 @@ def login():
                 
             except:
                 print(sqlite3.Error)
+        return input_NIK
 
 def buat_akun():
     print()
