@@ -107,21 +107,35 @@ def main():
     print("\t0. Quit")
     pilih = input("pilih: ")
 
-    if pilih is "1":
+    if pilih == "1":
         os.system("cls")
         payment()
-    elif pilih is "2":
+    elif pilih == "2":
         os.system("cls")
         history()
-    elif pilih is "3":
+    elif pilih == "3":
         os.system("cls")
         income()
-    elif pilih is "0":
+    elif pilih == "0":
         quit()
     else:
         print("inputan salah!")
         os.system("cls")
         main()
+
+def check_akun():
+    
+    cek_akun = get_customer()
+    input_NIK = ""
+    try:
+        input_NIK = input("Masukkan NIK: ")
+        if input_NIK in cek_akun:
+            return input_NIK
+        else:
+            print("Data tidak ditemukan!\nSilakan memasukkan data diri terlebih dahulu\n\n")                
+    except:
+        print(sqlite3.Error)
+    
 
 def login():
     print()
@@ -133,18 +147,16 @@ def login():
         nik_baru = buat_akun()
         return nik_baru
     elif customer_baru == "n":
-
-        cek_akun = get_customer()
-        input_NIK = ""
-        while(True):
-            try:
-                input_NIK = input("Masukkan NIK: ")
-                if input_NIK in cek_akun:
-                    break
-                
-            except:
-                print(sqlite3.Error)
-        return input_NIK
+        check = check_akun()
+        if check == None:
+            nik_baru = buat_akun()
+            return nik_baru
+        else:
+            return check
+    else:
+        os.system("cls")
+        login()
+        
 
 def buat_akun():
     print()
@@ -229,9 +241,11 @@ def payment():
 
         update_products(kuantitas, pilih_product)
         insert_orders(order)
-
+        
+        beli_lagi = ""
         print()
         beli_lagi = input("apakah anda ingin membeli motor lain?(y/n): ")
+
         if beli_lagi == "y":
             pass
         elif beli_lagi == "n":
@@ -283,7 +297,7 @@ def income():
     for i in pendapatan:
         print("Pendapatan: " + str(i[0]))
 
-    print("press 1 to continue to menu ")
+    print("press 1 to continue to menu: ")
     while(True):
         i = input()
         if i == "1":
